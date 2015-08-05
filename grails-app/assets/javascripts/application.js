@@ -10,11 +10,36 @@
 //= require_self
 
 if (typeof jQuery !== 'undefined') {
-	(function($) {
-		$('#spinner').ajaxStart(function() {
-			$(this).fadeIn();
-		}).ajaxStop(function() {
-			$(this).fadeOut();
-		});
-	})(jQuery);
+    (function ($) {
+        $('#spinner').ajaxStart(function () {
+            $(this).fadeIn();
+        }).ajaxStop(function () {
+                $(this).fadeOut();
+            });
+    })(jQuery);
+}
+
+$(document).ready(function () {
+    enableAjaxifiedDataTable();
+    drawTable($('#employeeListing'), 1)
+});
+
+function drawTable(table, noOfPagesToCache) {
+    $(table).dataTable({
+        'aoColumnDefs': [
+            {
+                'bSortable': false,
+                'aTargets': ['nosort']
+            }
+        ],
+        "lengthMenu": [
+            [10, 25, 50, 100, parseInt($(table).data('totalRecords'))],
+            [10, 25, 50, 100, "All"]
+        ],
+        "serverSide": true,
+        "ajax": $.fn.dataTable.pipeline({
+            url: $(table).data('ajax-url'),
+            pages: noOfPagesToCache
+        })
+    });
 }

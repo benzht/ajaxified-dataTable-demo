@@ -3,6 +3,11 @@
 <head>
     <meta name="layout" content="main">
     <g:set var="entityName" value="${message(code: 'employee.label', default: 'Employee')}"/>
+    <asset:javascript src="jquery.js"/>
+    <asset:javascript src="jquery.datatables.min.js"/>
+    <asset:javascript src="ajaxifiedDataTable.js"/>
+    <asset:javascript src="application.js"/>
+    <asset:stylesheet src="jquery.datatables.min.css"/>
     <title><g:message code="default.list.label" args="[entityName]"/></title>
 </head>
 
@@ -24,7 +29,7 @@
     <g:if test="${flash.message}">
         <div class="message" role="status">${flash.message}</div>
     </g:if>
-    <table>
+    <table id="employeeListing" data-ajax-url="${createLink(controller: 'employee', action: 'ajax_fetchList')}" data-totalRecords="${totalRecords}">
         <thead>
         <tr>
             <td>First Name</td>

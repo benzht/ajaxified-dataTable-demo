@@ -6,8 +6,6 @@ import groovy.json.JsonSlurper
 class EmployeeController {
 
     def list() {
-        List<Map> employeeInstanceList = getParsedDemoData()
-        [eemployeeInstanceList: employeeInstanceList, employeeInstanceCount: employeeInstanceList.size()]
     }
 
     List<Map> getParsedDemoData() {

@@ -37,6 +37,7 @@ function drawTable(table, noOfPagesToCache) {
             [10, 25, 50, 100, "All"]
         ],
         "serverSide": true,
+        "bProcessing": true,
         "ajax": $.fn.dataTable.pipeline({
             url: $(table).data('ajax-url'),
             pages: noOfPagesToCache

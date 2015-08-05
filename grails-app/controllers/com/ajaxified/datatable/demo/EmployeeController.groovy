@@ -7,21 +7,18 @@ import groovy.json.JsonSlurper
 class EmployeeController {
 
     def list() {
-        Integer totalRecords = getParsedDemoData().size()
-        [totalRecords: totalRecords]
+        [totalRecords: getParsedDemoData()?.size()]
     }
 
     def ajax_fetchList() {
-        List<Map> employeeInstanceList = getParsedDemoData()
-        Map paginationDetails = getPaginationAndSortDetails(params, employeeInstanceList.size())
-        if( paginationDetails?.sortOrder){
-            employeeInstanceList = employeeInstanceList?.sort {it."${paginationDetails.sortBy}"}
-            if(paginationDetails.sortOrder == 'desc'){
-                employeeInstanceList = employeeInstanceList?.reverse()
-            }
+        List<Map> employeeList = getParsedDemoData()
+        Map paginationDetails = getPaginationAndSortDetails(params, employeeList.size())
+        if (paginationDetails?.sortOrder) {
+            employeeList = employeeList?.sort { it."${paginationDetails.sortBy}" }
+            employeeList = (paginationDetails.sortOrder == 'desc') ? employeeList?.reverse() : employeeList
         }
-        List<Map> result = employeeInstanceList[paginationDetails.startIndex..paginationDetails.endIndex]
-        render([data: getList(result), recordsTotal: employeeInstanceList.size(), recordsFiltered: employeeInstanceList.size()] as JSON)
+        List<Map> result = employeeList[paginationDetails.startIndex..paginationDetails.endIndex]
+        render([data: getList(result), recordsTotal: employeeList.size(), recordsFiltered: employeeList.size()] as JSON)
     }
 
     private static List getColumns() {
@@ -41,7 +38,9 @@ class EmployeeController {
         Integer columnNumber = Integer.parseInt(order.find { it.key.toString().contains('column') }.value.toString()),
                 startIndex = Integer.parseInt(parameters.start), endIndex = (startIndex + Integer.parseInt(parameters.length))
         endIndex = endIndex > total ? total : endIndex
-        return [startIndex: startIndex, endIndex: endIndex - 1, sortBy: columns[columnNumber], sortOrder :order.find { it.key.toString().contains('dir') }.value]
+        return [startIndex: startIndex, endIndex: endIndex - 1, sortBy: columns[columnNumber], sortOrder: order.find {
+            it.key.toString().contains('dir')
+        }.value]
     }
 
     private static List<Map> getParsedDemoData() {

@@ -1,4 +1,3 @@
-<%@ page import="com.ajaxified.datatable.demo.Employee" %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -8,14 +7,20 @@
 </head>
 
 <body>
-<a href="#list-employee" class="skip" tabindex="-1"><g:message code="default.link.skip.label"
-                                                               default="Skip to content&hellip;"/></a>
+<a href="#list-employee" class="skip" tabindex="-1">
+    <g:message code="default.link.skip.label" default="Skip to content&hellip;"/>
+</a>
 
 <div class="nav" role="navigation">
     <ul>
-        <li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
-        <li><g:link class="create" action="create"><g:message code="default.new.label"
-                                                              args="[entityName]"/></g:link></li>
+        <li>
+            <a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a>
+        </li>
+        <li>
+            <g:link class="create" action="create">
+                <g:message code="default.new.label" args="[entityName]"/>
+            </g:link>
+        </li>
     </ul>
 </div>
 
@@ -27,49 +32,17 @@
     <table>
         <thead>
         <tr>
-
-            <g:sortableColumn property="address"
-                              title="${message(code: 'employee.address.label', default: 'Address')}"/>
-
-            <g:sortableColumn property="dob" title="${message(code: 'employee.dob.label', default: 'Dob')}"/>
-
-            <g:sortableColumn property="firstName"
-                              title="${message(code: 'employee.firstName.label', default: 'First Name')}"/>
-
-            <g:sortableColumn property="lastName"
-                              title="${message(code: 'employee.lastName.label', default: 'Last Name')}"/>
-
-            <g:sortableColumn property="office" title="${message(code: 'employee.office.label', default: 'Office')}"/>
-
-            <g:sortableColumn property="salary" title="${message(code: 'employee.salary.label', default: 'Salary')}"/>
-
+            <td>First Name</td>
+            <td>Last Name</td>
+            <td>Email</td>
+            <td>Age</td>
+            <td>City</td>
+            <td>Salary</td>
         </tr>
         </thead>
         <tbody>
-        <g:each in="${employeeInstanceList}" status="i" var="employeeInstance">
-            <tr class="${(i % 2) == 0 ? 'even' : 'odd'}">
-
-                <td><g:link action="show"
-                            id="${employeeInstance.id}">${fieldValue(bean: employeeInstance, field: "address")}</g:link></td>
-
-                <td><g:formatDate date="${employeeInstance.dob}"/></td>
-
-                <td>${fieldValue(bean: employeeInstance, field: "firstName")}</td>
-
-                <td>${fieldValue(bean: employeeInstance, field: "lastName")}</td>
-
-                <td>${fieldValue(bean: employeeInstance, field: "office")}</td>
-
-                <td>${fieldValue(bean: employeeInstance, field: "salary")}</td>
-
-            </tr>
-        </g:each>
         </tbody>
     </table>
-
-    <div class="pagination">
-        <g:paginate total="${employeeInstanceCount ?: 0}"/>
-    </div>
 </div>
 </body>
 </html>

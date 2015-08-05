@@ -12,8 +12,15 @@ class EmployeeController {
     }
 
     def ajax_fetchList() {
-        Map paginationDetails = getPaginationAndSortDetails(params)
-        List<Map> employeeInstanceList = getParsedDemoData(), result = employeeInstanceList[paginationDetails.startIndex..paginationDetails.endIndex]
+        List<Map> employeeInstanceList = getParsedDemoData()
+        Map paginationDetails = getPaginationAndSortDetails(params, employeeInstanceList.size())
+        if( paginationDetails?.sortOrder){
+            employeeInstanceList = employeeInstanceList?.sort {it."${paginationDetails.sortBy}"}
+            if(paginationDetails.sortOrder == 'desc'){
+                employeeInstanceList = employeeInstanceList?.reverse()
+            }
+        }
+        List<Map> result = employeeInstanceList[paginationDetails.startIndex..paginationDetails.endIndex]
         render([data: getList(result), recordsTotal: employeeInstanceList.size(), recordsFiltered: employeeInstanceList.size()] as JSON)
     }
 
@@ -29,17 +36,17 @@ class EmployeeController {
         return valueList
     }
 
-    private static Map getPaginationAndSortDetails(Map parameters) {
+    private static Map getPaginationAndSortDetails(Map parameters, Integer total) {
         Map order = parameters.findAll { it.key.toString().startsWith('order') }
         Integer columnNumber = Integer.parseInt(order.find { it.key.toString().contains('column') }.value.toString()),
-                startIndex = Integer.parseInt(parameters.start), endIndex = startIndex + Integer.parseInt(parameters.length)
-        String sortOrder = columns[columnNumber] + '_' + order.find { it.key.toString().contains('dir') }.value
-        return [startIndex: startIndex, endIndex: endIndex-1, sortOrder: sortOrder]
+                startIndex = Integer.parseInt(parameters.start), endIndex = (startIndex + Integer.parseInt(parameters.length))
+        endIndex = endIndex > total ? total : endIndex
+        return [startIndex: startIndex, endIndex: endIndex - 1, sortBy: columns[columnNumber], sortOrder :order.find { it.key.toString().contains('dir') }.value]
     }
 
     private static List<Map> getParsedDemoData() {
         List<Map> list = readAndParseFixture('employees.json').data
-        4.times {
+        2.times {
             list.addAll(list)
         }
         return list

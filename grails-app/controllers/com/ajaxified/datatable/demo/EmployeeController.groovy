@@ -19,10 +19,7 @@ class EmployeeController {
     def ajax_fetchList() {
         List<Map> employeeList =readAndParseFixture('employees.json')
         Map paginationDetails = getPaginationAndSortDetails(params, employeeList.size())
-        if (paginationDetails?.sortOrder) {
-            employeeList = employeeList?.sort { it."${paginationDetails.sortBy}" }
-            employeeList = (paginationDetails.sortOrder == 'desc') ? employeeList?.reverse() : employeeList
-        }
+        employeeList = sortList(employeeList, paginationDetails)
         List<Map> result = employeeList[paginationDetails.startIndex..paginationDetails.endIndex]
         render([data: getList(result), recordsTotal: employeeList.size(), recordsFiltered: employeeList.size()] as JSON)
     }
@@ -37,6 +34,15 @@ class EmployeeController {
             valueList.add([it."${columns[0]}", it."${columns[1]}", it."${columns[2]}", it."${columns[3]}", it."${columns[4]}", it."${columns[5]}"])
         }
         return valueList
+    }
+
+    private static List<Map> sortList(List<Map> list, Map paginationDetails){
+        if (paginationDetails?.sortOrder) {
+            list = list?.sort { it."${paginationDetails.sortBy}" }
+            list = (paginationDetails.sortOrder == 'desc') ? list?.reverse() : list
+        }
+
+        return list
     }
 
     private static Map getPaginationAndSortDetails(Map parameters, Integer total) {

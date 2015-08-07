@@ -6,13 +6,18 @@ import groovy.json.JsonSlurper
 
 class EmployeeController {
 
+    private static List<Map>  readAndParseFixture(String fileName) {
+        File jsonFile = Holders.grailsApplication.mainContext.getResource("classpath:" + "${fileName}").file
+        return (new JsonSlurper().parseText(jsonFile.text) as Map).data
+    }
+
     def list() {
-        [totalRecords: getParsedDemoData()?.size()]
+        [totalRecords: readAndParseFixture('employees.json')?.size()]
     }
 
     /* method used to fetch records through ajax call */
     def ajax_fetchList() {
-        List<Map> employeeList = getParsedDemoData()
+        List<Map> employeeList =readAndParseFixture('employees.json')
         Map paginationDetails = getPaginationAndSortDetails(params, employeeList.size())
         if (paginationDetails?.sortOrder) {
             employeeList = employeeList?.sort { it."${paginationDetails.sortBy}" }
@@ -42,18 +47,5 @@ class EmployeeController {
         String sortOrder = order.find { it.key.toString().contains('dir') }.value// find sort order - asc or desc
 
         return [startIndex: startIndex, endIndex: endIndex - 1, sortBy: columns[columnNumber], sortOrder: sortOrder]
-    }
-
-    private static List<Map> getParsedDemoData() {
-        List<Map> list = readAndParseFixture('employees.json').data
-        2.times {
-            list.addAll(list)
-        }
-        return list
-    }
-
-    private static Map readAndParseFixture(String fileName) {
-        File jsonFile = Holders.grailsApplication.mainContext.getResource("classpath:" + "${fileName}").file
-        return (new JsonSlurper().parseText(jsonFile.text) as Map)
     }
 }

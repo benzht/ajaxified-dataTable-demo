@@ -113,14 +113,6 @@
             "salary": 3150
         },
         {
-            "firstName": "Jane",
-            "lastName": " Quincy",
-            "email": "jane.quincy@example.com",
-            "age": 35,
-            "city": "Houston",
-            "salary": 7800
-        },
-        {
             "firstName": "George",
             "lastName": "Smith",
             "email": "george.smith@example.com",
@@ -335,14 +327,6 @@
             "age": 29,
             "city": "Cleveland",
             "salary": 5250
-        },
-        {
-            "firstName": "Jane",
-            "lastName": " Phil",
-            "email": "jane.phil@example.com",
-            "age": 37,
-            "city": "Houston",
-            "salary": 5800
         },
         {
             "firstName": "Frank",

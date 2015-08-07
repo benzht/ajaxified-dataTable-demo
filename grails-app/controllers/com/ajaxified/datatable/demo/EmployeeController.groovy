@@ -17,8 +17,7 @@ class EmployeeController {
 
     /* method used to fetch records through ajax call */
     def ajax_fetchList() {
-        List<Map> employeeList = readAndParseFixture('employees.json')
-        employeeList = searchRecords(employeeList, params)
+        List<Map> employeeList = searchRecords(params)
         Map paginationDetails = getPaginationAndSortDetails(params, employeeList.size())
         employeeList = sortList(employeeList, paginationDetails)
         List<Map> result = employeeList ? employeeList[paginationDetails.startIndex..paginationDetails.endIndex] : []
@@ -45,14 +44,15 @@ class EmployeeController {
         return list
     }
 
-    private static List<Map> searchRecords(List<Map> list, Map parameters) {
-        String searchText = (parameters?."search[value]").toString().trim()
+    private static List<Map> searchRecords(Map parameters) {
+        List<Map> employeeList = readAndParseFixture('employees.json')
+        String searchText = (parameters?."search[value]")?.toString()?.trim()
         if (searchText) {
-            list = list.findAll { Map temp ->
+            employeeList = employeeList.findAll { Map temp ->
                 temp.any { entry -> entry.value.toString().toLowerCase().contains(searchText.toLowerCase()) }
             }
         }
-        return list
+        return employeeList
     }
 
     private static Map getPaginationAndSortDetails(Map parameters, Integer total) {

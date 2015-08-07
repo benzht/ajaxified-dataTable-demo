@@ -10,6 +10,7 @@ class EmployeeController {
         [totalRecords: getParsedDemoData()?.size()]
     }
 
+    /* method used to fetch records through ajax call */
     def ajax_fetchList() {
         List<Map> employeeList = getParsedDemoData()
         Map paginationDetails = getPaginationAndSortDetails(params, employeeList.size())
@@ -34,13 +35,13 @@ class EmployeeController {
     }
 
     private static Map getPaginationAndSortDetails(Map parameters, Integer total) {
-        Map order = parameters.findAll { it.key.toString().startsWith('order') }
-        Integer columnNumber = Integer.parseInt(order.find { it.key.toString().contains('column') }.value.toString()),
+        Map order = parameters.findAll { it.key.toString().startsWith('order') } // order[0][dir]:asc where 0 is column no and asc is the sortOrder
+        Integer columnNumber = Integer.parseInt(order.find {it.key.toString().contains('column')}.value.toString()), // fetch column no
                 startIndex = Integer.parseInt(parameters.start), endIndex = (startIndex + Integer.parseInt(parameters.length))
-        endIndex = endIndex > total ? total : endIndex
-        return [startIndex: startIndex, endIndex: endIndex - 1, sortBy: columns[columnNumber], sortOrder: order.find {
-            it.key.toString().contains('dir')
-        }.value]
+        endIndex = endIndex > total ? total : endIndex // check if endIndex is greater than no of records
+        String sortOrder = order.find { it.key.toString().contains('dir') }.value// find sort order - asc or desc
+
+        return [startIndex: startIndex, endIndex: endIndex - 1, sortBy: columns[columnNumber], sortOrder: sortOrder]
     }
 
     private static List<Map> getParsedDemoData() {
